@@ -2,7 +2,7 @@
 import 'package:navi/utils/station.dart';
 import 'package:url_launcher/url_launcher.dart';
 
-String getMapUrl(Loc location) {
+String getMapUrl(Loca location) {
   double latitude = location.latitude;
   double longitude = location.longitude;
   String apiKey = 'AIzaSyDZ5SEoGCVzuY04wJCi86v_Gu21HUmcylQ'; // Replace with your actual API key
