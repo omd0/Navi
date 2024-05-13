@@ -5,7 +5,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:navi/assets/LineLists.dart';
 import 'package:navi/utils/i_widgets.dart';
-import 'package:navi/utils/location/calculate_distance.dart';
 import 'package:navi/utils/location/get_url.dart';
 import 'package:navi/utils/location/sevice.dart';
 import 'package:navi/utils/station.dart';
@@ -21,20 +20,22 @@ class BusLine extends StatefulWidget {
 
 class _BusLineState extends State<BusLine> {
 
-  Future<List<Station>> _checkLine(BuildContext context) async {
+  Future<List<Station>?> _checkLine(BuildContext context) async {
     Position location = await getLocation();
     for (final line in Lines ){
       for (final station in line){
-        if ((near(location,station.stationLocation) < 350){
+        if ((near(location,station.stationLocation)) < 350){
+          return line;
         }
       }
     }; 
-    return 
+    return null;
   }
   @override
   void initState() {
     super.initState();
     _checkLine(context);
+    
 
   }
 
