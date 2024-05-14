@@ -20,22 +20,33 @@ class BusLine extends StatefulWidget {
 
 class _BusLineState extends State<BusLine> {
 
-  Future<List<Station>?> _checkLine(BuildContext context) async {
+  Future<List<Station>> _checkLine(BuildContext context) async {
     Position location = await getLocation();
     for (final line in Lines ){
       for (final station in line){
+        print(station);
         if ((near(location,station.stationLocation)) < 350){
+          if (kDebugMode) {
+            print('distance for nearest station');
+            print(near(location,station.stationLocation));
+          }
           return line;
         }
       }
     }; 
-    return null;
+    return [];
   }
   @override
   void initState() {
     super.initState();
-    _checkLine(context);
-    
+    _checkLine(context).then((value){
+      if (value.isNotEmpty){
+        Navigator.pushReplacement(
+        context,
+        MaterialPageRoute(builder: (context) => _BusLine(Line:value)),
+      );
+      };
+    });
 
   }
 
@@ -51,7 +62,7 @@ class _BusLineState extends State<BusLine> {
 
 class _BusLine extends StatelessWidget {
   _BusLine({super.key, required this.Line});
-  final List<Station> Line;
+  final List<Station>? Line;
 
   @override
   Widget build(BuildContext context) {
@@ -61,7 +72,7 @@ class _BusLine extends StatelessWidget {
           child: CustomPaint(
         painter: BoxPainter(),
         child: ListView.builder(
-          itemCount: Line11.length,
+          itemCount: Line?.length,
           itemBuilder: (context, index) {
             return Column(
                mainAxisAlignment: MainAxisAlignment.center,
@@ -74,8 +85,8 @@ class _BusLine extends StatelessWidget {
                         return AlertDialog(
                           title: Text('Location'),
                           content: GestureDetector(onTap:()=>{
-                            launchInBrowser(Uri.parse(getMapUrl(Line[index].stationLocation)))
-                          },child: Text(getMapUrl(Line[index].stationLocation))),
+                            launchInBrowser(Uri.parse(getMapUrl(Line![index].stationLocation)))
+                          },child: Text(getMapUrl(Line![index].stationLocation))),
                           actions: [
                             TextButton(
                               child: Text('Close'),
@@ -102,12 +113,12 @@ class _BusLine extends StatelessWidget {
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
                         Text(
-                          (Line[index].number.toString()+'B'),
+                          (Line![index].number.toString()+'B'),
                           style: TextStyle(fontSize: 35, fontWeight: FontWeight.bold),
                         ),
                         // SizedBox(height: 5),
                         Text(
-                          (Line[index].name),
+                          (Line![index].name),
                           style: TextStyle(fontSize: 12, fontWeight: FontWeight.normal),
                         ),
                       ],

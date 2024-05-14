@@ -1,5 +1,6 @@
 import 'dart:ffi';
 
+import 'package:flutter/foundation.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:navi/utils/station.dart';
 
@@ -53,18 +54,19 @@ Future<bool> getPremision() async{
 }
 
 double near(dynamic position1, dynamic position2, {double max = 200}){
-  double? startLatitude,startLongitude, endLatitude,endLongitude;
-
+  double startLatitude,startLongitude, endLatitude,endLongitude;
   startLatitude = position1.latitude;
   startLongitude = position1.longitude;
 
-  startLatitude = position2.latitude;
-  startLongitude = position2.longitude;
-  
-  if ([startLatitude,startLongitude, endLatitude,endLongitude].any((val)=> val?.isFinite == false)){
-    double distance = Geolocator.distanceBetween(startLatitude!, startLongitude!, endLatitude!, endLongitude!);
-    return distance;
-  }else{
-    return -1;
+  endLatitude = position2.latitude;
+  endLongitude = position2.longitude;
+
+  if (kDebugMode) {
+    print(startLongitude);
+    print(startLatitude);
+
   }
+  
+  double distance = Geolocator.distanceBetween(startLatitude, startLongitude, endLatitude, endLongitude);
+  return distance;
 }
