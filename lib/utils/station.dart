@@ -1,24 +1,46 @@
-class Loca {
-  double latitude;
-  double longitude;
+import 'package:flutter/material.dart';
 
-  Loca(this.latitude, this.longitude);
+class Loca {
+  final double latitude;
+  final double longitude;
+
+  const Loca(this.latitude, this.longitude);
 }
 
 class Station {
-  String name;
-  int type;
-  int number;
-  String arName;
-  Loca stationLocation;
+  final String name;
+  final int type;
+  final int number;
+  final String arName;
+  final Loca stationLocation;
+  final String Rd;
 
   Station({
     required this.name,
     required this.arName,
     required this.number,
     required this.type,
-    required this.stationLocation, required String Rd,
+    required this.stationLocation,
+    required this.Rd,
   });
+}
+
+
+class Road{}
+
+class Line {
+  
+  List<Station> stations;
+  List<Road> roads;
+  List<Station> teminals;
+
+  Line({
+    required this.stations,
+    required this.roads,
+    required this.teminals
+  });
+
+  bool get isInitialized => false;
 }
 // void main() {
 //   // Example usage
