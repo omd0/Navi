@@ -19,18 +19,6 @@ class GetStation {
     theLine = checkLine(currntLocation)!;
   }
 
-  Future<Station?> station() async {
-  Position location = await getLocation();
-    if (!theLine.isInitialized) { 
-      theLine = checkLine(currntLocation) as Line; 
-    }else{
-    for(final station in theLine.stations){
-      return station;
-      }
-    };
-    return null;
-  }
-
    Line? checkLine(location) { 
     for (final line in Lines ){
       for (final station in line.stations){
@@ -49,4 +37,14 @@ class GetStation {
 
 
 
-
+Future<Station?> station(Line line) async {
+  final _loc = await Geolocator.getCurrentPosition(desiredAccuracy: LocationAccuracy.medium);
+  for(final station in line.stations){
+    if(near(_loc, station.stationLocation) < 500){
+      return station;
+      }else{
+      return null;
+     }
+    }
+  return null;
+  }

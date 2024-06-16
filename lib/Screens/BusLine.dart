@@ -11,6 +11,7 @@ import 'package:navi/utils/location/sevice.dart';
 import 'package:navi/utils/station.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:navi/utils/url_lancher.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 class BusLine extends StatefulWidget {
   const BusLine({super.key});
@@ -48,7 +49,12 @@ class _BusLineState extends State<BusLine> {
 class _BusLine extends StatelessWidget {
   _BusLine({super.key, required this.line});
   final Line? line;
+  late Station targetStation;
 
+  void selectStation(int i){
+    targetStation = line!.stations[i];
+    
+  }
   @override
   Widget build(BuildContext context) {
     //EXp:
@@ -64,15 +70,23 @@ class _BusLine extends StatelessWidget {
               children: [
                 GestureDetector(
                   onTap: () {
+                    final lat = line!.stations[index].stationLocation.latitude;
+                    final lng = line!.stations[index].stationLocation.longitude;
+                    final URL = Uri.parse('https://maps.google.com/?q=$lat,$lng');
                     showDialog(
                       context: context,
                       builder: (BuildContext context) {
                         return AlertDialog(
                           title: Text('Location'),
-                          content: GestureDetector(onTap:()=>{
-                            launchInBrowser(Uri.parse(getMapUrl(line!.stations[index].stationLocation)))
-                          },child: Text(getMapUrl(line!.stations[index].stationLocation))),
+                          content: GestureDetector(onTap:() => launchUrl(URL),child:Column(children: [Text(,)],)),
                           actions: [
+                            TextButton(
+                              child: Text('Select'),
+                              onPressed: () {
+                                Navigator.of(context).pop();
+                                
+                              },
+                            ),
                             TextButton(
                               child: Text('Close'),
                               onPressed: () {
