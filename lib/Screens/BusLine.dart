@@ -6,12 +6,15 @@ import 'package:flutter/widgets.dart';
 import 'package:navi/assets/LineLists.dart';
 import 'package:navi/utils/Station_Services.dart';
 import 'package:navi/utils/i_widgets.dart';
-import 'package:navi/utils/location/get_url.dart';
 import 'package:navi/utils/location/sevice.dart';
 import 'package:navi/utils/station.dart';
 import 'package:geolocator/geolocator.dart';
-import 'package:navi/utils/url_lancher.dart';
 import 'package:url_launcher/url_launcher.dart';
+
+
+
+late GetStation getStation; 
+
 
 class BusLine extends StatefulWidget {
   const BusLine({super.key});
@@ -21,18 +24,20 @@ class BusLine extends StatefulWidget {
 }
 
 class _BusLineState extends State<BusLine> {
-  late GetStation getStation; 
+  
+
   @override
   void initState() {
     super.initState();
-    getLocation().then((value){
-        getStation = GetStation(value);
-        
-        Navigator.pushReplacement(
-        context,
-        MaterialPageRoute(builder: (context) => _BusLine(line:getStation.theLine)),
-      );
-    });
+    getLocation().then((postion){
+      final line = checkLine(postion);
+      getStation = GetStation(line!);
+      
+      Navigator.pushReplacement(
+      context,
+      MaterialPageRoute(builder: (context) => ViewBusLine(line:getStation.theLine)),
+    );
+  });
 
   }
 
@@ -46,15 +51,17 @@ class _BusLineState extends State<BusLine> {
   }
 }
 
-class _BusLine extends StatelessWidget {
-  _BusLine({super.key, required this.line});
-  final Line? line;
-  late Station targetStation;
 
-  void selectStation(int i){
-    targetStation = line!.stations[i];
-    
-  }
+
+
+
+
+class ViewBusLine extends StatelessWidget {
+  const ViewBusLine({super.key, required this.line});
+  final Line line;
+  
+
+ 
   @override
   Widget build(BuildContext context) {
     //EXp:
@@ -62,70 +69,80 @@ class _BusLine extends StatelessWidget {
       body: Center(
           child: CustomPaint(
         painter: BoxPainter(),
-        child: ListView.builder(
-          itemCount: line?.stations.length,
-          itemBuilder: (context, index) {
-            return Column(
-               mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                GestureDetector(
-                  onTap: () {
-                    final lat = line!.stations[index].stationLocation.latitude;
-                    final lng = line!.stations[index].stationLocation.longitude;
-                    final URL = Uri.parse('https://maps.google.com/?q=$lat,$lng');
-                    showDialog(
-                      context: context,
-                      builder: (BuildContext context) {
-                        return AlertDialog(
-                          title: Text('Location'),
-                          content: GestureDetector(onTap:() => launchUrl(URL),child:Column(children: [Text(,)],)),
-                          actions: [
-                            TextButton(
-                              child: Text('Select'),
-                              onPressed: () {
-                                Navigator.of(context).pop();
-                                
-                              },
-                            ),
-                            TextButton(
-                              child: Text('Close'),
-                              onPressed: () {
-                                Navigator.of(context).pop();
-                                
-                              },
-                            ),
-                          ],
+        child: StreamBuilder<Station?>(
+          stream: getStation.station(),
+          builder: (context, snapshot) {
+            return ListView.builder(
+              itemCount: line.stations.length,
+              itemBuilder: (context, index) {
+                final station = line.stations[index];
+                final lat = line.stations[index].stationLocation.latitude;
+                final lng = line.stations[index].stationLocation.longitude;
+                final mapURL = Uri.parse('https://maps.google.com/?q=$lat,$lng');
+                return Column(
+                   mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    GestureDetector(
+                      onTap: () => {getStation.targetStation = station},
+                      onLongPress: () {
+                        showDialog(
+                          context: context,
+                          builder: (BuildContext context) {
+                            return AlertDialog(
+                              title: Text('Location'),
+                              content: GestureDetector(onTap:() => launchUrl(mapURL),child:
+                              Column(  
+                                mainAxisSize: MainAxisSize.min,
+                                children: [Text('${station.name} ${station.number}')])),
+                              actions: [
+                                TextButton(
+                                  child: Text('Select'),
+                                  onPressed: () {
+                                    Navigator.of(context).pop();
+                                    
+                                  },
+                                ),
+                                TextButton(
+                                  child: Text('Close'),
+                                  onPressed: () {
+                                    Navigator.of(context).pop();
+                                    
+                                  },
+                                ),
+                              ],
+                            );
+                          },
                         );
                       },
-                    );
-                  },
-                  child: Container(
-                    width: 200,
-                    height: 100,
-                    decoration: BoxDecoration(
-                      color: Colors.grey,
-                      borderRadius: BorderRadius.circular(10),
-                      border: Border.all(
-                      color: Colors.black,
-                      width: 2,),),
-                    child: Column(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        Text(
-                          (line!.stations[index].number.toString()+'B'),
-                          style: TextStyle(fontSize: 35, fontWeight: FontWeight.bold),
+                      child: Container(
+                        width: 200,
+                        height: 100,
+                        decoration: BoxDecoration(
+                          color: Color(0xffd9d9d9),
+                          borderRadius: BorderRadius.circular(10),
+                          border: Border.all(
+                          color: Colors.black,
+                          width: 2,),),
+                        child: Column(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            Text(
+                              (station.number.toString()+'B'),
+                              style: TextStyle(fontSize: 35, fontWeight: FontWeight.bold),
+                            ),
+                            // SizedBox(height: 5),
+                            Text(
+                              (station.name),
+                              style: TextStyle(fontSize: 12, fontWeight: FontWeight.normal),
+                            ),
+                          ],
                         ),
-                        // SizedBox(height: 5),
-                        Text(
-                          (line!.stations[index].name),
-                          style: TextStyle(fontSize: 12, fontWeight: FontWeight.normal),
-                        ),
-                      ],
+                      ),
                     ),
-                  ),
-                ),
-                SizedBox(height: 90),
-              ],
+                    SizedBox(height: 90),
+                  ],
+                );
+              }
             );
           }
         ),
@@ -133,6 +150,30 @@ class _BusLine extends StatelessWidget {
     );
   }
 }
+
+
+
+
+
+
+
+
+
+class StationContainerStyle extends BoxDecoration {
+  const StationContainerStyle({
+    required Color color,
+    required BorderRadius borderRadius,
+    required Border border,
+  }) : super(
+          color: color,
+          borderRadius: borderRadius,
+          border: border,
+        );
+}
+
+
+
+
 
 class BoxPainter extends CustomPainter {
   @override

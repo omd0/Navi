@@ -11,15 +11,40 @@ import 'package:navi/assets/LineLists.dart';
 
 
 class GetStation {
-  late Position currntLocation;
-  late Station nearest;  
   late Line theLine;
+  late Station nearest;  //The nearst Station or the Currunt  
+  late Station targetStation; //The Station to notificate when arrived
+  bool isArrived = false; 
 
-  GetStation(this.currntLocation){
-    theLine = checkLine(currntLocation)!;
+
+  Stream<Station?> station() async* {
+    final loc = await Geolocator.getCurrentPosition(desiredAccuracy: LocationAccuracy.medium);
+    for(final station in theLine.stations){
+        if(near(loc, station.stationLocation) < 500){
+          if (station == targetStation){isArrived = true;}
+          yield station;
+        }
+      }
+  }
+  
+  // Stream<bool> arrived(){
+  //   yield isArrived;
+  // }
+
+  GetStation(Line line){
+    theLine = line;
   }
 
-   Line? checkLine(location) { 
+   
+}
+
+
+
+
+
+
+
+  Line? checkLine(location) { 
     for (final line in Lines ){
       for (final station in line.stations){
         if ((near(location,station.stationLocation)) < 350){
@@ -32,19 +57,4 @@ class GetStation {
       }
     }; 
     return Line11;
-  }
-}
-
-
-
-Future<Station?> station(Line line) async {
-  final _loc = await Geolocator.getCurrentPosition(desiredAccuracy: LocationAccuracy.medium);
-  for(final station in line.stations){
-    if(near(_loc, station.stationLocation) < 500){
-      return station;
-      }else{
-      return null;
-     }
-    }
-  return null;
   }

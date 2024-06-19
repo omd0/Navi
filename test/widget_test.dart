@@ -13,7 +13,6 @@ import 'package:navi/main.dart';
 
 import 'dart:math';
 
-import 'package:location/location.dart';
 import 'package:navi/utils/station.dart';
 
 void main() {
