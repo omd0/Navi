@@ -15,11 +15,11 @@ import 'dart:math';
 
 import 'package:navi/utils/station.dart';
 
-void main() {
-  double ra = calculateDistance(24.79540753186273, 46.671439275646435, line11[0].stationLocation);
-  print(ra);
+// void main() {
+//   double ra = calculateDistance(24.79540753186273, 46.671439275646435, line11[0].stationLocation);
+//   print(ra);
 
-}
+// }
 
 
 

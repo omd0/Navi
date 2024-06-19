@@ -2,17 +2,17 @@
 
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
 import 'package:navi/assets/LineLists.dart';
 import 'package:navi/utils/Station_Services.dart';
 import 'package:navi/utils/i_widgets.dart';
 import 'package:navi/utils/location/sevice.dart';
 import 'package:navi/utils/station.dart';
 import 'package:geolocator/geolocator.dart';
+import 'package:navi/utils/style/Station_widget.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 
-
+//define GetStation Object.
 late GetStation getStation; 
 
 
@@ -79,6 +79,7 @@ class ViewBusLine extends StatelessWidget {
                 final lat = line.stations[index].stationLocation.latitude;
                 final lng = line.stations[index].stationLocation.longitude;
                 final mapURL = Uri.parse('https://maps.google.com/?q=$lat,$lng');
+                final f;
                 return Column(
                    mainAxisAlignment: MainAxisAlignment.center,
                   children: [
@@ -89,21 +90,21 @@ class ViewBusLine extends StatelessWidget {
                           context: context,
                           builder: (BuildContext context) {
                             return AlertDialog(
-                              title: Text('Location'),
+                              title: const Text('Location'),
                               content: GestureDetector(onTap:() => launchUrl(mapURL),child:
                               Column(  
                                 mainAxisSize: MainAxisSize.min,
                                 children: [Text('${station.name} ${station.number}')])),
                               actions: [
                                 TextButton(
-                                  child: Text('Select'),
+                                  child: const Text('Select'),
                                   onPressed: () {
                                     Navigator.of(context).pop();
                                     
                                   },
                                 ),
                                 TextButton(
-                                  child: Text('Close'),
+                                  child: const Text('Close'),
                                   onPressed: () {
                                     Navigator.of(context).pop();
                                     
@@ -117,29 +118,24 @@ class ViewBusLine extends StatelessWidget {
                       child: Container(
                         width: 200,
                         height: 100,
-                        decoration: BoxDecoration(
-                          color: Color(0xffd9d9d9),
-                          borderRadius: BorderRadius.circular(10),
-                          border: Border.all(
-                          color: Colors.black,
-                          width: 2,),),
+                        decoration: StationContainerStyle(type: ),
                         child: Column(
                           mainAxisAlignment: MainAxisAlignment.center,
                           children: [
                             Text(
-                              (station.number.toString()+'B'),
-                              style: TextStyle(fontSize: 35, fontWeight: FontWeight.bold),
+                              (station.number.toString()+'B'), 
+                              style: const TextStyle(fontSize: 35, fontWeight: FontWeight.bold),
                             ),
                             // SizedBox(height: 5),
                             Text(
                               (station.name),
-                              style: TextStyle(fontSize: 12, fontWeight: FontWeight.normal),
+                              style: const TextStyle(fontSize: 12, fontWeight: FontWeight.normal),
                             ),
                           ],
                         ),
                       ),
                     ),
-                    SizedBox(height: 90),
+                    const SizedBox(height: 90),
                   ],
                 );
               }
@@ -159,17 +155,6 @@ class ViewBusLine extends StatelessWidget {
 
 
 
-class StationContainerStyle extends BoxDecoration {
-  const StationContainerStyle({
-    required Color color,
-    required BorderRadius borderRadius,
-    required Border border,
-  }) : super(
-          color: color,
-          borderRadius: borderRadius,
-          border: border,
-        );
-}
 
 
 
@@ -187,7 +172,7 @@ final glowingPaint = Paint()
   ..color = Colors.yellow // Set the color for the glowing effect
   ..strokeWidth = 10
   ..style = PaintingStyle.stroke
-  ..maskFilter = MaskFilter.blur(BlurStyle.solid, 5.0);
+  ..maskFilter = const MaskFilter.blur(BlurStyle.solid, 5.0);
 
     final startX = size.width / 2;
     final startY = 0.0;
