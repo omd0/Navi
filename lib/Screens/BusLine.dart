@@ -75,66 +75,21 @@ class ViewBusLine extends StatelessWidget {
             return ListView.builder(
               itemCount: line.stations.length,
               itemBuilder: (context, index) {
+                print(snapshot.data?.name);
                 final station = line.stations[index];
-                final lat = line.stations[index].stationLocation.latitude;
-                final lng = line.stations[index].stationLocation.longitude;
+                // -------------------------------------
+                //--get map url for station Loction
+                final lat = station.stationLocation.latitude;
+                final lng = station.stationLocation.longitude;
                 final mapURL = Uri.parse('https://maps.google.com/?q=$lat,$lng');
+                //---------------------------------
                 final f;
+                //get state of station to style Station Container
+                
                 return Column(
                    mainAxisAlignment: MainAxisAlignment.center,
                   children: [
-                    GestureDetector(
-                      onTap: () => {getStation.targetStation = station},
-                      onLongPress: () {
-                        showDialog(
-                          context: context,
-                          builder: (BuildContext context) {
-                            return AlertDialog(
-                              title: const Text('Location'),
-                              content: GestureDetector(onTap:() => launchUrl(mapURL),child:
-                              Column(  
-                                mainAxisSize: MainAxisSize.min,
-                                children: [Text('${station.name} ${station.number}')])),
-                              actions: [
-                                TextButton(
-                                  child: const Text('Select'),
-                                  onPressed: () {
-                                    Navigator.of(context).pop();
-                                    
-                                  },
-                                ),
-                                TextButton(
-                                  child: const Text('Close'),
-                                  onPressed: () {
-                                    Navigator.of(context).pop();
-                                    
-                                  },
-                                ),
-                              ],
-                            );
-                          },
-                        );
-                      },
-                      child: Container(
-                        width: 200,
-                        height: 100,
-                        decoration: StationContainerStyle(type: ),
-                        child: Column(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: [
-                            Text(
-                              (station.number.toString()+'B'), 
-                              style: const TextStyle(fontSize: 35, fontWeight: FontWeight.bold),
-                            ),
-                            // SizedBox(height: 5),
-                            Text(
-                              (station.name),
-                              style: const TextStyle(fontSize: 12, fontWeight: FontWeight.normal),
-                            ),
-                          ],
-                        ),
-                      ),
-                    ),
+                    StationBox(station:station, getStation: getStation),
                     const SizedBox(height: 90),
                   ],
                 );

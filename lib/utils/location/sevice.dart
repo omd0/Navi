@@ -61,11 +61,11 @@ double near(dynamic position1, dynamic position2, {double max = 200}){
   endLatitude = position2.latitude;
   endLongitude = position2.longitude;
 
-  if (kDebugMode) {
-    print(startLongitude);
-    print(startLatitude);
+  // if (kDebugMode) {
+  //   print(startLongitude);
+  //   print(startLatitude);
 
-  }
+  // }
   
   double distance = Geolocator.distanceBetween(startLatitude, startLongitude, endLatitude, endLongitude);
   return distance;
