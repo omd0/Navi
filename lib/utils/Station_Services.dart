@@ -8,29 +8,37 @@ import 'package:navi/assets/LineLists.dart';
 import 'package:navi/utils/location/sevice.dart';
 import 'station.dart';
 import 'package:navi/assets/LineLists.dart';
+import 'package:bloc/bloc.dart';
 
 
 
-class GetStation {
-  late Line theLine;
-  Station? nearest;  //The nearst Station or the Currunt  
-  Station? targetStation; //The Station to notificate when arrived
-  bool isArrived = false; 
+class StationBloc{}
 
+class StationState {
+  final Line theLine;
+  final Station nearest;  //The nearst Station or the Currunt  
+  final Station targetStation; //The Station to notificate when arrived
+  final bool isArrived = false;
+  StationState(this.theLine, this.nearest, this.targetStation);
+}
+
+
+
+
+class GetStation extends Bloc<StationBloc, StationState> {
+  
+  @override
+  Blo
 
   Stream<Station?> station() async* {
-    for(;;){
-      final loc = await Geolocator.getCurrentPosition(desiredAccuracy: LocationAccuracy.medium);
-      for(final station in theLine.stations){
-          if(near(loc, station.stationLocation) < 500){
+    Geolocator.getPositionStream(locationSettings: LocationSettings(accuracy: LocationAccuracy.medium,distanceFilter: 10)).listen((postion){
+       for(final station in theLine.stations){
+          if(near(postion, station.stationLocation) < 500){
             if (station == targetStation){isArrived = true;}
             yield station;
           }
         }
-        await Future.delayed(Duration(seconds: 5));
-    }
-  }
-  
+    }}
   // Stream<bool> arrived(){
   //   yield isArrived;
   // }

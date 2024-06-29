@@ -14,14 +14,14 @@ class StationContainerStyle extends BoxDecoration {
           borderRadius: _vars(type)[0],
           border: Border.all(
           color: _vars(type)[2],
-          width: 4,)
+          width: _vars(type)[1])
         );
   static dynamic _vars(String type){
     switch (type){
-      case '': return [BorderRadius.circular(10), 4, Colors.black];
-      case 'target': return [BorderRadius.circular(15), 4, Color(0xff3BD433)];
-      case 'arrived': return [BorderRadius.circular(10), 4, Colors.black];
-      case 'current': return [BorderRadius.circular(10), 4, Colors.black];
+      case '': return [BorderRadius.circular(10), 4.0, Colors.black];
+      case 'target': return [BorderRadius.circular(15), 10.0, Color(0xff3BD433)];
+      case 'arrived': return [BorderRadius.circular(10), 10.0, Color.fromARGB(255, 36, 85, 249)];
+      case 'current': return [BorderRadius.circular(20), 6.0, const Color.fromARGB(255, 62, 62, 62)];
 
     }
   }
